@@ -1,0 +1,3 @@
+/*.sh linguist-detectable=false
+/rootfs/** linguist-detectable=false
+/Dockerfile-* linguist-language=Dockerfile
