@@ -34,6 +34,7 @@ LABEL maintainer="CrazyMax"
 RUN apk --update --no-cache add \
     bash \
     ca-certificates \
+    git \
     openssh-client \
   && rm -rf /tmp/* /var/cache/apk/*
 
