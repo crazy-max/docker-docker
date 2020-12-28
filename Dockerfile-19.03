@@ -6,11 +6,10 @@ RUN DOCKER_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
     "linux/arm/v6")  echo "armel"   ;; \
     "linux/arm/v7")  echo "armhf"   ;; \
     "linux/arm64")   echo "aarch64" ;; \
-    "linux/ppc64le") echo "ppc64le" ;; \
-    "linux/s390x")   echo "s390x"   ;; \
     *)               echo ""        ;; esac) \
   && echo "DOCKER_ARCH=$DOCKER_ARCH" \
-  && wget -q "https://download.docker.com/linux/static/stable/${DOCKER_ARCH}/docker-${DOCKER_VERSIION}.tgz" -qO "/tmp/docker.tgz" \
+  && mkdir -p /opt/docker \
+  && wget -q "https://download.docker.com/linux/static/stable/${DOCKER_ARCH}/docker-${DOCKER_VERSION}.tgz" -qO "/tmp/docker.tgz" \
   && tar --extract --file /tmp/docker.tgz --strip-components 1 --directory /opt/docker/
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.12 as buildx
@@ -21,10 +20,9 @@ RUN BUILDX_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
     "linux/arm/v6")  echo "arm-v6"  ;; \
     "linux/arm/v7")  echo "arm-v7"  ;; \
     "linux/arm64")   echo "arm64"   ;; \
-    "linux/ppc64le") echo "ppc64le" ;; \
-    "linux/s390x")   echo "s390x"   ;; \
     *)               echo ""        ;; esac) \
-  && echo "BUILDX_ARCH=$$BUILDX_ARCH" \
+  && echo "BUILDX_ARCH=$BUILDX_ARCH" \
+  && mkdir -p /opt \
   && wget -q "https://github.com/docker/buildx/releases/download/v${BUILDX_VERSION}/buildx-v${BUILDX_VERSION}.linux-${BUILDX_ARCH}" -qO "/opt/docker-buildx" \
   && chmod +x /opt/docker-buildx
 
