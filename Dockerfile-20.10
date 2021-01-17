@@ -8,7 +8,7 @@ RUN apk --update --no-cache add \
   && rm -rf /tmp/* /var/cache/apk/*
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} base as docker-static
-ENV DOCKER_VERSION="20.10.1"
+ENV DOCKER_VERSION="20.10.2"
 ARG TARGETPLATFORM
 RUN DOCKER_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
     "linux/amd64")   echo "x86_64"  ;; \
