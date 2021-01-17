@@ -17,14 +17,25 @@ If you are interested, [check out](https://hub.docker.com/r/crazymax/) my other 
 
 ___
 
-* [Docker](#docker)
-  * [Image](#image)
+* [Build locally](#build-locally)
+* [Image](#image)
 * [How can I help?](#how-can-i-help)
 * [License](#license)
 
-## Docker
+## Build locally
 
-### Image
+```shell
+git clone https://github.com/crazy-max/docker-docker.git
+cd docker-docker
+
+# Build image and output to docker (default)
+docker buildx bake
+
+# Build multi-platform image
+docker buildx bake image-all
+```
+
+## Image
 
 | Registry                                                                                          | Image                           |
 |---------------------------------------------------------------------------------------------------|---------------------------------|
