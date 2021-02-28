@@ -17,10 +17,17 @@ If you are interested, [check out](https://hub.docker.com/r/crazymax/) my other 
 
 ___
 
+
+* [Features](#features)
 * [Build locally](#build-locally)
 * [Image](#image)
 * [How can I help?](#how-can-i-help)
 * [License](#license)
+
+## Features
+
+* [BuildKit](https://github.com/moby/buildkit) included
+* [buildx](https://github.com/docker/buildx) included
 
 ## Build locally
 
