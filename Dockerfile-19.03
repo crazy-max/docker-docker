@@ -1,4 +1,8 @@
-FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.12 as base
+ARG DOCKER_VERSION=19.03.15
+ARG BUILDKIT_VERSION=0.8.1
+ARG BUILDX_VERSION=0.5.1
+
+FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.13 as base
 RUN apk --update --no-cache add \
     ca-certificates \
     curl \
@@ -8,8 +12,8 @@ RUN apk --update --no-cache add \
   && rm -rf /tmp/* /var/cache/apk/*
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} base as docker-static
-ENV DOCKER_VERSION="19.03.15"
 ARG TARGETPLATFORM
+ARG DOCKER_VERSION
 RUN DOCKER_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
     "linux/amd64")   echo "x86_64"  ;; \
     "linux/arm/v7")  echo "armhf"   ;; \
@@ -22,8 +26,8 @@ RUN DOCKER_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
   && ls -al /opt/docker
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} base as docker-buildkit
-ENV BUILDKIT_VERSION="0.8.1"
 ARG TARGETPLATFORM
+ARG BUILDKIT_VERSION
 RUN BUILDKIT_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
     "linux/amd64")   echo "amd64"   ;; \
     "linux/arm/v7")  echo "arm-v7"  ;; \
@@ -36,8 +40,8 @@ RUN BUILDKIT_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
   && ls -al /opt/docker-buildkit
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} base as docker-buildx
-ENV BUILDX_VERSION="0.5.1"
 ARG TARGETPLATFORM
+ARG BUILDX_VERSION
 RUN BUILDX_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
     "linux/amd64")   echo "amd64"   ;; \
     "linux/arm/v7")  echo "arm-v7"  ;; \
@@ -48,7 +52,7 @@ RUN BUILDX_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
   && set -x; wget -q "https://github.com/docker/buildx/releases/download/v${BUILDX_VERSION}/buildx-v${BUILDX_VERSION}.linux-${BUILDX_ARCH}" -qO "/opt/docker-buildx" \
   && chmod +x /opt/docker-buildx
 
-FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.12
+FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.13
 LABEL maintainer="CrazyMax"
 
 RUN apk --update --no-cache add \
