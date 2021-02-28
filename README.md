@@ -28,6 +28,7 @@ ___
 
 * [BuildKit](https://github.com/moby/buildkit) included
 * [buildx](https://github.com/docker/buildx) included
+* [Docker Compose](https://github.com/docker/compose) included
 
 ## Build locally
 
