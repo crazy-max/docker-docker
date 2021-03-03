@@ -2,16 +2,13 @@ ARG DOCKER_VERSION=20.10.4
 ARG BUILDKIT_VERSION=0.8.2
 ARG BUILDX_VERSION=0.5.1
 
-FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.13 as base
+FROM alpine:3.13 as base
 RUN apk --update --no-cache add \
     ca-certificates \
-    curl \
-    git \
-    jq \
     openssh-client \
   && rm -rf /tmp/* /var/cache/apk/*
 
-FROM --platform=${TARGETPLATFORM:-linux/amd64} base as docker-static
+FROM base as docker-static
 ARG TARGETPLATFORM
 ARG DOCKER_VERSION
 RUN DOCKER_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
@@ -25,7 +22,7 @@ RUN DOCKER_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
   && tar --extract --file /tmp/docker.tgz --strip-components 1 --directory /opt/docker/ \
   && ls -al /opt/docker
 
-FROM --platform=${TARGETPLATFORM:-linux/amd64} base as docker-buildkit
+FROM base as docker-buildkit
 ARG TARGETPLATFORM
 ARG BUILDKIT_VERSION
 RUN BUILDKIT_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
@@ -39,7 +36,7 @@ RUN BUILDKIT_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
   && tar -xzf /tmp/buildkit.tar.gz --strip 1 -C /opt/docker-buildkit \
   && ls -al /opt/docker-buildkit
 
-FROM --platform=${TARGETPLATFORM:-linux/amd64} base as docker-buildx
+FROM base as docker-buildx
 ARG TARGETPLATFORM
 ARG BUILDX_VERSION
 RUN BUILDX_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
@@ -52,14 +49,13 @@ RUN BUILDX_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
   && set -x; wget -q "https://github.com/docker/buildx/releases/download/v${BUILDX_VERSION}/buildx-v${BUILDX_VERSION}.linux-${BUILDX_ARCH}" -qO "/opt/docker-buildx" \
   && chmod +x /opt/docker-buildx
 
-FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine:3.13
+FROM alpine:3.13
 LABEL maintainer="CrazyMax"
 
 RUN apk --update --no-cache add \
     bash \
     ca-certificates \
     docker-compose \
-    git \
     openssh-client \
   && rm -rf /tmp/* /var/cache/apk/*
 
