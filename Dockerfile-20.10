@@ -1,14 +1,14 @@
-ARG DOCKER_VERSION=20.10.4
+ARG DOCKER_VERSION=20.10.5
 ARG BUILDKIT_VERSION=0.8.2
 ARG BUILDX_VERSION=0.5.1
 
-FROM alpine:3.13 as base
+FROM alpine:3.13 AS base
 RUN apk --update --no-cache add \
     ca-certificates \
     openssh-client \
   && rm -rf /tmp/* /var/cache/apk/*
 
-FROM base as docker-static
+FROM base AS docker-static
 ARG TARGETPLATFORM
 ARG DOCKER_VERSION
 RUN DOCKER_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
@@ -22,7 +22,7 @@ RUN DOCKER_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
   && tar --extract --file /tmp/docker.tgz --strip-components 1 --directory /opt/docker/ \
   && ls -al /opt/docker
 
-FROM base as docker-buildkit
+FROM base AS docker-buildkit
 ARG TARGETPLATFORM
 ARG BUILDKIT_VERSION
 RUN BUILDKIT_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
@@ -36,7 +36,7 @@ RUN BUILDKIT_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
   && tar -xzf /tmp/buildkit.tar.gz --strip 1 -C /opt/docker-buildkit \
   && ls -al /opt/docker-buildkit
 
-FROM base as docker-buildx
+FROM base AS docker-buildx
 ARG TARGETPLATFORM
 ARG BUILDX_VERSION
 RUN BUILDX_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
