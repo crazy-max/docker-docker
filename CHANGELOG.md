@@ -1,5 +1,11 @@
 # Changelog
 
+## 20.10.7-r1 (2021/07/17)
+
+* BuildKit 0.9.0
+* buildx 0.6.0
+* Add compose-cli 2.0.0-beta.6
+
 ## 20.10.7-r0 (2021/06/03)
 
 * Docker 20.10.7
