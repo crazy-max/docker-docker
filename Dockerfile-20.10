@@ -1,6 +1,10 @@
-ARG DOCKER_VERSION=20.10.7
-ARG BUILDKIT_VERSION=0.8.3
-ARG BUILDX_VERSION=0.5.1
+ARG DOCKER_VERSION="20.10.7"
+ARG BUILDKIT_VERSION="0.9.0"
+ARG BUILDX_VERSION="0.6.0"
+ARG COMPOSE_CLI_VERSION="2.0.0-beta.6"
+
+FROM moby/buildkit:v${BUILDKIT_VERSION} as buildkit
+FROM docker/buildx-bin:${BUILDX_VERSION} as buildx
 
 FROM alpine:3.13 AS base
 RUN apk --update --no-cache add \
@@ -11,46 +15,29 @@ RUN apk --update --no-cache add \
 FROM base AS docker-static
 ARG TARGETPLATFORM
 ARG DOCKER_VERSION
+WORKDIR /opt/docker
 RUN DOCKER_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
     "linux/amd64")   echo "x86_64"  ;; \
     "linux/arm/v7")  echo "armhf"   ;; \
     "linux/arm64")   echo "aarch64" ;; \
     *)               echo ""        ;; esac) \
   && echo "DOCKER_ARCH=$DOCKER_ARCH" \
-  && mkdir -p /opt/docker \
-  && set -x; wget -q "https://download.docker.com/linux/static/stable/${DOCKER_ARCH}/docker-${DOCKER_VERSION}.tgz" -qO "/tmp/docker.tgz" \
-  && tar --extract --file /tmp/docker.tgz --strip-components 1 --directory /opt/docker/ \
-  && ls -al /opt/docker
+  && wget -qO- "https://download.docker.com/linux/static/stable/${DOCKER_ARCH}/docker-${DOCKER_VERSION}.tgz" | tar xvz --strip 1
 
-FROM base AS docker-buildkit
+FROM base AS compose-cli
 ARG TARGETPLATFORM
-ARG BUILDKIT_VERSION
-RUN BUILDKIT_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
-    "linux/amd64")   echo "amd64"   ;; \
-    "linux/arm/v7")  echo "arm-v7"  ;; \
-    "linux/arm64")   echo "arm64"   ;; \
+ARG COMPOSE_CLI_VERSION
+WORKDIR /opt
+RUN COMPOSE_CLI_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
+    "linux/amd64")   echo "linux-amd64"  ;; \
+    "linux/arm/v7")  echo "linux-armv7"  ;; \
+    "linux/arm64")   echo "linux-arm64"  ;; \
     *)               echo ""        ;; esac) \
-  && echo "BUILDKIT_ARCH=$BUILDKIT_ARCH" \
-  && mkdir -p /opt/docker-buildkit \
-  && set -x; wget -q "https://github.com/moby/buildkit/releases/download/v${BUILDKIT_VERSION}/buildkit-v${BUILDKIT_VERSION}.linux-${BUILDKIT_ARCH}.tar.gz" -qO "/tmp/buildkit.tar.gz" \
-  && tar -xzf /tmp/buildkit.tar.gz --strip 1 -C /opt/docker-buildkit \
-  && ls -al /opt/docker-buildkit
-
-FROM base AS docker-buildx
-ARG TARGETPLATFORM
-ARG BUILDX_VERSION
-RUN BUILDX_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
-    "linux/amd64")   echo "amd64"   ;; \
-    "linux/arm/v7")  echo "arm-v7"  ;; \
-    "linux/arm64")   echo "arm64"   ;; \
-    *)               echo ""        ;; esac) \
-  && echo "BUILDX_ARCH=$BUILDX_ARCH" \
-  && mkdir -p /opt \
-  && set -x; wget -q "https://github.com/docker/buildx/releases/download/v${BUILDX_VERSION}/buildx-v${BUILDX_VERSION}.linux-${BUILDX_ARCH}" -qO "/opt/docker-buildx" \
-  && chmod +x /opt/docker-buildx
+  && echo "COMPOSE_CLI_ARCH=$COMPOSE_CLI_ARCH" \
+  && wget -q "https://github.com/docker/compose-cli/releases/download/v${COMPOSE_CLI_VERSION}/docker-compose-${COMPOSE_CLI_ARCH}" -qO "/opt/docker-compose" \
+  && chmod +x /opt/docker-compose
 
 FROM alpine:3.13
-LABEL maintainer="CrazyMax"
 
 RUN apk --update --no-cache add \
     bash \
@@ -59,9 +46,11 @@ RUN apk --update --no-cache add \
     openssh-client \
   && rm -rf /tmp/* /var/cache/apk/*
 
-COPY --from=docker-static /opt/docker/ /usr/local/bin/
-COPY --from=docker-buildkit /opt/docker-buildkit/ /usr/local/bin/
-COPY --from=docker-buildx /opt/docker-buildx /usr/libexec/docker/cli-plugins/docker-buildx
+COPY --from=docker-static /opt/docker/ /usr/bin/
+COPY --from=buildkit /usr/bin/buildctl /usr/bin/buildctl
+COPY --from=buildkit /usr/bin/buildkit* /usr/bin/
+COPY --from=buildx /buildx /usr/libexec/docker/cli-plugins/docker-buildx
+COPY --from=compose-cli /opt/docker-compose /usr/libexec/docker/cli-plugins/docker-compose
 
 # https://github.com/docker-library/docker/pull/166
 #   dockerd-entrypoint.sh uses DOCKER_TLS_CERTDIR for auto-generating TLS certificates
@@ -74,6 +63,7 @@ RUN docker --version \
   && buildkitd --version \
   && buildctl --version \
   && docker buildx version \
+  && docker compose version \
   && docker-compose --version \
   && mkdir /certs /certs/client \
   && chmod 1777 /certs /certs/client
