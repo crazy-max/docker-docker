@@ -46,9 +46,9 @@ RUN apk --update --no-cache add \
     openssh-client \
   && rm -rf /tmp/* /var/cache/apk/*
 
-COPY --from=docker-static /opt/docker/ /usr/bin/
-COPY --from=buildkit /usr/bin/buildctl /usr/bin/buildctl
-COPY --from=buildkit /usr/bin/buildkit* /usr/bin/
+COPY --from=docker-static /opt/docker/ /usr/local/bin/
+COPY --from=buildkit /usr/bin/buildctl /usr/local/bin/buildctl
+COPY --from=buildkit /usr/bin/buildkit* /usr/local/bin/
 COPY --from=buildx /buildx /usr/libexec/docker/cli-plugins/docker-buildx
 COPY --from=compose-cli /opt/docker-compose /usr/libexec/docker/cli-plugins/docker-compose
 
