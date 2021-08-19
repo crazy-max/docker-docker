@@ -1,12 +1,12 @@
-ARG DOCKER_VERSION="20.10.7"
+ARG DOCKER_VERSION="20.10.8"
 ARG BUILDKIT_VERSION="0.9.0"
 ARG BUILDX_VERSION="0.6.1"
-ARG COMPOSE_CLI_VERSION="2.0.0-beta.6"
+ARG COMPOSE_CLI_VERSION="2.0.0-rc.1"
 
 FROM moby/buildkit:v${BUILDKIT_VERSION} as buildkit
 FROM docker/buildx-bin:${BUILDX_VERSION} as buildx
 
-FROM alpine:3.13 AS base
+FROM alpine:3.14 AS base
 RUN apk --update --no-cache add \
     ca-certificates \
     openssh-client \
@@ -37,7 +37,7 @@ RUN COMPOSE_CLI_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
   && wget -q "https://github.com/docker/compose-cli/releases/download/v${COMPOSE_CLI_VERSION}/docker-compose-${COMPOSE_CLI_ARCH}" -qO "/opt/docker-compose" \
   && chmod +x /opt/docker-compose
 
-FROM alpine:3.13
+FROM alpine:3.14
 
 RUN apk --update --no-cache add \
     bash \
