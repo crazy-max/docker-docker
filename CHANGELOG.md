@@ -1,5 +1,11 @@
 # Changelog
 
+## 20.10.8-r0 (2021/08/19)
+
+* Docker 20.10.8
+* compose-cli 2.0.0-rc.1
+* Alpine Linux 3.14
+
 ## 20.10.7-r3 (2021/08/01)
 
 * buildx 0.6.1
