@@ -1,7 +1,7 @@
-ARG DOCKER_VERSION="20.10.11"
+ARG DOCKER_VERSION="20.10.12"
 ARG BUILDKIT_VERSION="0.9.3"
-ARG BUILDX_VERSION="0.7.0"
-ARG COMPOSE_VERSION="2.1.1"
+ARG BUILDX_VERSION="0.7.1"
+ARG COMPOSE_VERSION="2.2.2"
 
 FROM moby/buildkit:v${BUILDKIT_VERSION} as buildkit
 FROM docker/buildx-bin:${BUILDX_VERSION} as buildx
@@ -40,7 +40,7 @@ RUN apk --update --no-cache add \
     ca-certificates \
     docker-compose \
     openssh-client \
-  && rm -rf /tmp/* /var/cache/apk/*
+  && rm -rf /tmp/*
 
 COPY --from=docker-static /opt/docker/ /usr/local/bin/
 COPY --from=buildkit /usr/bin/buildctl /usr/local/bin/buildctl
