@@ -1,10 +1,12 @@
 ARG DOCKER_VERSION="20.10.12"
 ARG BUILDKIT_VERSION="0.9.3"
+ARG BINFMT_VERSION="buildkit-v6.1.0-23"
 ARG BUILDX_VERSION="0.7.1"
 ARG COMPOSE_VERSION="2.2.2"
 
 FROM moby/buildkit:v${BUILDKIT_VERSION} as buildkit
 FROM docker/buildx-bin:${BUILDX_VERSION} as buildx
+FROM tonistiigi/binfmt:${BINFMT_VERSION} as binfmt
 
 FROM alpine:3.15 AS base
 
@@ -45,6 +47,7 @@ RUN apk --update --no-cache add \
 COPY --from=docker-static /opt/docker/ /usr/local/bin/
 COPY --from=buildkit /usr/bin/buildctl /usr/local/bin/buildctl
 COPY --from=buildkit /usr/bin/buildkit* /usr/local/bin/
+COPY --from=binfmt /buildkit-qemu-* /usr/local/bin/
 COPY --from=buildx /buildx /usr/libexec/docker/cli-plugins/docker-buildx
 COPY --from=compose /opt/docker-compose /usr/libexec/docker/cli-plugins/docker-compose
 
