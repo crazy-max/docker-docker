@@ -1,5 +1,12 @@
 # Changelog
 
+## 20.10.12-r0 (2021/12/16)
+
+* Docker 20.10.12
+* Buildx 0.7.1
+* Compose 2.2.2
+* Alpine Linux 3.15
+
 ## 20.10.11-r0 (2021/11/21)
 
 * Docker 20.10.11
