@@ -26,9 +26,10 @@ ___
 
 ## Features
 
-* [BuildKit](https://github.com/moby/buildkit) included
-* [buildx](https://github.com/docker/buildx) included
-* [Compose](https://github.com/docker/compose) included (v2 and v1)
+* [BuildKit](https://github.com/moby/buildkit)
+* [binfmt](https://github.com/tonistiigi/binfmt#buildkit-target) (for BuildKit's automatic emulation support)
+* [buildx](https://github.com/docker/buildx)
+* [Compose](https://github.com/docker/compose) (v2 and v1)
 
 ## Build locally
 
