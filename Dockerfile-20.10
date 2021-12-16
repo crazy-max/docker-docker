@@ -6,7 +6,7 @@ ARG COMPOSE_VERSION="2.2.2"
 FROM moby/buildkit:v${BUILDKIT_VERSION} as buildkit
 FROM docker/buildx-bin:${BUILDX_VERSION} as buildx
 
-FROM alpine:3.14 AS base
+FROM alpine:3.15 AS base
 
 FROM base AS docker-static
 ARG TARGETPLATFORM
@@ -33,7 +33,7 @@ RUN COMPOSE_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
   && wget -q "https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-${COMPOSE_ARCH}" -qO "/opt/docker-compose" \
   && chmod +x /opt/docker-compose
 
-FROM alpine:3.14
+FROM alpine:3.15
 
 RUN apk --update --no-cache add \
     bash \
