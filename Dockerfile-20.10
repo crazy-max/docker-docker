@@ -1,14 +1,15 @@
-ARG DOCKER_VERSION="20.10.12"
-ARG BUILDKIT_VERSION="0.9.3"
-ARG BINFMT_VERSION="buildkit-v6.1.0-23"
-ARG BUILDX_VERSION="0.7.1"
-ARG COMPOSE_VERSION="2.2.2"
+ARG DOCKER_VERSION="20.10.13"
+ARG BUILDKIT_VERSION="0.10.0"
+ARG BINFMT_VERSION="buildkit-v6.2.0-24"
+ARG BUILDX_VERSION="0.8.0"
+ARG COMPOSE_VERSION="2.3.3"
+ARG CNI_VERSION="1.1.0"
 
 FROM moby/buildkit:v${BUILDKIT_VERSION} as buildkit
 FROM docker/buildx-bin:${BUILDX_VERSION} as buildx
 FROM tonistiigi/binfmt:${BINFMT_VERSION} as binfmt
 
-FROM alpine:3.15 AS base
+FROM --platform=$BUILDPLATFORM alpine:3.15 AS base
 
 FROM base AS docker-static
 ARG TARGETPLATFORM
@@ -35,7 +36,16 @@ RUN COMPOSE_ARCH=$(case ${TARGETPLATFORM:-linux/amd64} in \
   && wget -q "https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-${COMPOSE_ARCH}" -qO "/opt/docker-compose" \
   && chmod +x /opt/docker-compose
 
+FROM base AS cni-plugins
+RUN apk add --no-cache curl
+ARG CNI_VERSION
+ARG TARGETOS
+ARG TARGETARCH
+WORKDIR /opt/cni/bin
+RUN curl -Ls https://github.com/containernetworking/plugins/releases/download/v$CNI_VERSION/cni-plugins-$TARGETOS-$TARGETARCH-v$CNI_VERSION.tgz | tar xzv
+
 FROM alpine:3.15
+ARG BUILDKIT_VERSION
 
 RUN apk --update --no-cache add \
     bash \
@@ -50,6 +60,8 @@ COPY --from=buildkit /usr/bin/buildkit* /usr/local/bin/
 COPY --from=binfmt /buildkit-qemu-* /usr/local/bin/
 COPY --from=buildx /buildx /usr/libexec/docker/cli-plugins/docker-buildx
 COPY --from=compose /opt/docker-compose /usr/libexec/docker/cli-plugins/docker-compose
+COPY --from=cni-plugins /opt/cni/bin /opt/cni/bin
+ADD https://raw.githubusercontent.com/moby/buildkit/v${BUILDKIT_VERSION}/hack/fixtures/cni.json /etc/buildkit/cni.json
 
 # https://github.com/docker-library/docker/pull/166
 #   dockerd-entrypoint.sh uses DOCKER_TLS_CERTDIR for auto-generating TLS certificates
