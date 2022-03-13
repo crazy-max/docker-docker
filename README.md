@@ -30,6 +30,7 @@ ___
 * [binfmt](https://github.com/tonistiigi/binfmt#buildkit-target) (for BuildKit's automatic emulation support)
 * [buildx](https://github.com/docker/buildx)
 * [Compose](https://github.com/docker/compose) (v2 and v1)
+* [CNI plugins](https://github.com/containernetworking/plugins) (for BuildKit)
 
 ## Build locally
 
