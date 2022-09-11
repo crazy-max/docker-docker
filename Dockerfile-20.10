@@ -1,3 +1,6 @@
+# syntax=docker/dockerfile:1
+
+ARG ALPINE_VERSION="3.16"
 ARG DOCKER_VERSION="20.10.16"
 ARG BUILDKIT_VERSION="0.10.3"
 ARG BINFMT_VERSION="buildkit-v6.2.0-24"
@@ -9,7 +12,7 @@ FROM moby/buildkit:v${BUILDKIT_VERSION} as buildkit
 FROM docker/buildx-bin:${BUILDX_VERSION} as buildx
 FROM tonistiigi/binfmt:${BINFMT_VERSION} as binfmt
 
-FROM --platform=$BUILDPLATFORM alpine:3.15 AS base
+FROM --platform=$BUILDPLATFORM alpine:${ALPINE_VERSION} AS base
 
 FROM base AS docker-static
 ARG TARGETPLATFORM
@@ -44,7 +47,7 @@ ARG TARGETARCH
 WORKDIR /opt/cni/bin
 RUN curl -Ls https://github.com/containernetworking/plugins/releases/download/v$CNI_VERSION/cni-plugins-$TARGETOS-$TARGETARCH-v$CNI_VERSION.tgz | tar xzv
 
-FROM alpine:3.15
+FROM alpine:${ALPINE_VERSION}
 ARG BUILDKIT_VERSION
 
 RUN apk --update --no-cache add \
