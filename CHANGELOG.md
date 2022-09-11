@@ -1,5 +1,14 @@
 # Changelog
 
+## 20.10.18-r0 (2022/09/11)
+
+* Docker 20.10.18
+* BuildKit 0.10.4
+* binfmt 7.0.0-29
+* Buildx 0.9.1
+* Compose 2.10.2
+* Alpine Linux 3.16
+
 ## 20.10.16-r0 (2022/05/13)
 
 * Docker 20.10.16
