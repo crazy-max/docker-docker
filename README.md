@@ -10,10 +10,13 @@
 
 ## About
 
-[Docker](https://www.docker.com/) in Docker (DinD) image inspired by the [official Docker image](https://github.com/docker-library/docker/).<br />
-If you are interested, [check out](https://hub.docker.com/r/crazymax/) my other Docker images!
+[Docker](https://www.docker.com/) in Docker (DinD) image inspired by the
+[official Docker image](https://github.com/docker-library/docker/).
 
-💡 Want to be notified of new releases? Check out 🔔 [Diun (Docker Image Update Notifier)](https://github.com/crazy-max/diun) project!
+> **Note**
+> 
+> Want to be notified of new releases? Check out 🔔 [Diun (Docker Image Update Notifier)](https://github.com/crazy-max/diun)
+> project!
 
 ___
 
