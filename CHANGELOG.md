@@ -1,5 +1,13 @@
 # Changelog
 
+## 20.10.22-r0 (2022/12/29)
+
+* Docker 20.10.22
+* BuildKit 0.10.6
+* Compose 2.14.2
+* binfmt buildkit-v7.1.0-30
+* Alpine 3.17
+
 ## 20.10.20-r0 (2022/10/23)
 
 * Docker 20.10.20
