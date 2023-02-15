@@ -1,5 +1,13 @@
 # Changelog
 
+## 20.10.23-r0 (2023/02/15)
+
+* Docker 20.10.23
+* BuildKit 0.11.3
+* Buildx 0.10.2
+* Compose 2.16.0
+* CNI plugins 1.2.0
+
 ## 20.10.22-r0 (2022/12/29)
 
 * Docker 20.10.22
