@@ -3,7 +3,7 @@ variable "DEFAULT_TAG" {
 }
 
 variable "DOCKERFILE" {
-  default = "Dockerfile-20.10"
+  default = "Dockerfile-23.0"
 }
 
 // Special target: https://github.com/docker/metadata-action#bake-definition
@@ -16,12 +16,9 @@ group "default" {
   targets = ["image-local"]
 }
 
-target "dockerfile" {
-  dockerfile = DOCKERFILE
-}
-
 target "image" {
-  inherits = ["dockerfile", "docker-metadata-action"]
+  inherits = ["docker-metadata-action"]
+  dockerfile = DOCKERFILE
 }
 
 target "image-local" {
