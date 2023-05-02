@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1
 
 ARG ALPINE_VERSION="3.17"
-ARG DOCKER_VERSION="23.0.3"
-ARG BUILDKIT_VERSION="0.11.5"
+ARG DOCKER_VERSION="23.0.5"
+ARG BUILDKIT_VERSION="0.11.6"
 ARG BINFMT_VERSION="buildkit-v7.1.0-30"
 ARG BUILDX_VERSION="0.10.4"
-ARG COMPOSE_VERSION="2.17.2"
+ARG COMPOSE_VERSION="2.17.3"
 ARG CNI_VERSION="1.2.0"
 
 FROM moby/buildkit:v${BUILDKIT_VERSION} as buildkit
@@ -48,14 +48,7 @@ WORKDIR /opt/cni/bin
 RUN curl -Ls https://github.com/containernetworking/plugins/releases/download/v$CNI_VERSION/cni-plugins-$TARGETOS-$TARGETARCH-v$CNI_VERSION.tgz | tar xzv
 
 FROM alpine:${ALPINE_VERSION}
-ARG BUILDKIT_VERSION
-
-RUN apk --update --no-cache add \
-    bash \
-    ca-certificates \
-    docker-compose \
-    openssh-client \
-  && rm -rf /tmp/*
+RUN apk --update --no-cache add bash ca-certificates docker-compose openssh-client
 
 COPY --from=docker-static /opt/docker/ /usr/local/bin/
 COPY --from=buildkit /usr/bin/buildctl /usr/local/bin/buildctl
@@ -64,6 +57,8 @@ COPY --from=binfmt /buildkit-qemu-* /usr/local/bin/
 COPY --from=buildx /buildx /usr/libexec/docker/cli-plugins/docker-buildx
 COPY --from=compose /opt/docker-compose /usr/libexec/docker/cli-plugins/docker-compose
 COPY --from=cni-plugins /opt/cni/bin /opt/cni/bin
+
+ARG BUILDKIT_VERSION
 ADD https://raw.githubusercontent.com/moby/buildkit/v${BUILDKIT_VERSION}/hack/fixtures/cni.json /etc/buildkit/cni.json
 
 # https://github.com/docker-library/docker/pull/166
