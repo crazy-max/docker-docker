@@ -17,7 +17,7 @@ on:
       - '**.md'
 
 env:
-  LATEST_DOCKERFILE: Dockerfile-23.0
+  LATEST_DOCKERFILE: Dockerfile-24.0
   DOCKERHUB_SLUG: crazymax/docker
   GHCR_SLUG: ghcr.io/crazy-max/docker
 
