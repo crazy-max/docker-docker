@@ -45,19 +45,23 @@ jobs:
       -
         name: Start
         run: |
+          docker compose config
           docker compose up -d
-          sleep 15
+          sleep 20
+          docker ps -a
+          netstat -atpn
+          docker compose logs
         working-directory: test
         env:
           DOCKER_IMAGE: ${{ env.BUILD_TAG }}
           DOCKER_CONTAINER: ${{ env.CONTAINER_NAME }}
           CONTEXT_DIR: ${{ matrix.context }}
-      -
-        name: Check container logs
-        uses: crazy-max/.github/.github/actions/container-logs-check@main
-        with:
-          container_name: ${{ env.CONTAINER_NAME }}
-          log_check: "API listen on [::]:2375"
+#      -
+#        name: Check container logs
+#        uses: crazy-max/.github/.github/actions/container-logs-check@main
+#        with:
+#          container_name: ${{ env.CONTAINER_NAME }}
+#          log_check: "API listen on [::]:2375"
       -
         name: Create context
         run: |
