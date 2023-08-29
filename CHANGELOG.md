@@ -1,5 +1,14 @@
 # Changelog
 
+## 23.0.6-r0 (2023/08/29)
+
+* Docker 23.0.6
+* BuildKit 0.12.2
+* Buildx 0.11.2
+* Compose 2.20.3
+* CNI plugins 1.3.0
+* Alpine Linux 3.18
+
 ## 23.0.5-r0 (2023/05/02)
 
 * Docker 23.0.5
