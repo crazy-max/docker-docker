@@ -1,5 +1,18 @@
 # Changelog
 
+## 25.0.2-r0 (2024/02/06)
+
+* Docker 25.0.2
+
+## 24.0.9-r0 (2024/02/06)
+
+* Docker 24.0.9
+* BuildKit 0.12.5
+* Buildx 0.12.1
+* Compose 2.24.5
+* CNI plugins 1.4.0
+* Alpine Linux 3.19
+
 ## 24.0.5-r0 (2023/08/29)
 
 * Docker 24.0.5
