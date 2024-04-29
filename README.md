@@ -13,8 +13,7 @@
 [Docker](https://www.docker.com/) in Docker (DinD) image inspired by the
 [official Docker image](https://github.com/docker-library/docker/).
 
-> **Note**
-> 
+> [!TIP] 
 > Want to be notified of new releases? Check out 🔔 [Diun (Docker Image Update Notifier)](https://github.com/crazy-max/diun)
 > project!
 
