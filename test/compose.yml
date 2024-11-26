@@ -1,0 +1,12 @@
+services:
+  docker:
+    image: ${DOCKER_IMAGE:-crazymax/docker}
+    container_name: ${DOCKER_CONTAINER:-docker}
+    privileged: true
+    command: --host=tcp://0.0.0.0:2375 --tlsverify=false --debug
+    ports:
+      - "12375:2375"
+    volumes:
+      - "./${CONTEXT_DIR:-qemu}:/src"
+    working_dir: /src
+    restart: always
